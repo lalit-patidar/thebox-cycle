@@ -16,6 +16,9 @@ client.connect();
 
 app.use(userCrudRoutes);
 app.use(userCreditRoutes);
+app.use((req, res) => {
+    res.status(404).send('<h1>PAGE NOT FOUND 404</h1>')
+})
 
 
 app.listen(port, () => console.log(`server is running at port ${port}`));
