@@ -2,13 +2,17 @@ const client = require("../../../config/db-setup/rds-instance")
 
 class UserCrudServices {
     async userPostService(body) {
+        const { firstName, lastName, email, password, phoneNumber, state, authOptionId } = body;
         try {
-            const { firstName, lastName, email, password, phoneNumber, state, authOptionId } = body;
             const data = await client.query(`INSERT INTO "users" ("firstName","lastName","email","password","phoneNumber","roleId","state","authOptionId") VALUES ('${firstName}', '${lastName}', '${email}','${password}', '${phoneNumber}', '1', '${state}','${authOptionId}');`);
+            await client.query(`INSERT INTO "credit-details" ("nickName","email","point","totalPoint","terminalNumber","weight","materialDetails") VALUES ('${firstName}', '${email}', '2000','2000', '1', '0kg', 'default' );`)
             return {
                 status: 201,
                 message: "new user is added",
-                body
+                body: {
+                    ...body,
+                    point: 2000
+                }
             };
         } catch (err) {
             throw err;

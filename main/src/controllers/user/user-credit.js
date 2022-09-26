@@ -44,8 +44,8 @@ const userUpdateCreditController = async (req, res, next) => {
 
 const userGetCreditController = async (req, res, next) => {
     try {
-        const userPhoneNumber = req.params.mobileNumber
-        const user = await UserCreditServicesInstance.userGetCreditService(userPhoneNumber);
+        const userEmail = req.params.email
+        const user = await UserCreditServicesInstance.userGetCreditService(userEmail);
         res.send(user)
   } catch(err) {
      res.send({

@@ -8,7 +8,9 @@ const userPostController = async (req, res, next) => {
        res.send({
         status: 404,
         message: "user already exist",
-        body: req.body
+        body: {
+            email: req.body.email
+        }
        });
     }
 }

@@ -6,12 +6,14 @@ class UserCreditService {
 
     async userAddCreditService(body) {
         try {
-            const { nickName, mobile, point, terminalNo, weight, materialDetail } = body;
-            const data = await client.query(`INSERT INTO "credit" ("nickname","mobile","point","terminalNo","weight","materialDetail") VALUES ('${nickName}', '${mobile}', '${point}', '${terminalNo}', '${weight}', '${materialDetail}' );`);
+            const { nickName, email, point, terminalNo, weight, materialDetail } = body;
+            const updatedRow = await client.query(`SELECT * FROM "credit-details" WHERE email='${email}' ORDER BY "updatedAt" DESC LIMIT 1;`)
+            let totalPoints = updatedRow.rows[0].totalPoint + point;
+            const data = await client.query(`INSERT INTO "credit-details" ("nickName","email","point","totalPoint","terminalNumber","weight","materialDetails") VALUES ('${nickName}', '${email}', '${point}','${totalPoints}', '${terminalNo}', '${weight}', '${materialDetail}' );`);
             return {
                 status: 201,
-                message: "new user is added",
-                body
+                message: "new credit points is added",
+                body: {email, totalPoints}
             };
         } catch (err) {
             throw err;
@@ -20,9 +22,19 @@ class UserCreditService {
 
 
 
-    async userDeductCreditService(email) {
+    async userDeductCreditService({email, deductPoints}) {
         try {
-           //user credit
+            const updatedRow = await client.query(`SELECT * FROM "credit-details" WHERE email='${email}' ORDER BY "updatedAt" DESC LIMIT 1;`);
+           let leftPoints = updatedRow.rows[0].totalPoint - deductPoints;
+           await client.query(`UPDATE "credit-details" SET "totalPoint"=${leftPoints} WHERE id=${updatedRow.rows[0].id};`)
+           return {
+            status: 200,
+            message: "deduct successfully",
+            body: {
+                dectedPoints: deductPoints,
+                email
+            }
+           }
         } catch (err) {
             throw err;
         }
@@ -31,25 +43,21 @@ class UserCreditService {
 
     async   userUpdateCreditController(body) {
         try {
-
+           
         } catch (err) {
 
         }
     }
 
 
-    async userGetCreditService(phoneNumber) {
+    async userGetCreditService(email) {
         try {
-           const response = await client.query(`SELECT * FROM "credit" WHERE mobile='${phoneNumber}'`);
-             let totalCreditPoints = 0;
-              response.rows.forEach(item => {
-                totalCreditPoints += parseInt(item.point)
-              })
+            const updatedRow = await client.query(`SELECT * FROM "credit-details" WHERE email='${email}' ORDER BY "updatedAt" DESC LIMIT 1;`);
            return {
             status: 200,
             message: "Total credit points",
             body: {
-                totalCreditPoints
+                totalCreditPoints: updatedRow.rows[0].totalPoint
             }
            }
         } catch (err) {

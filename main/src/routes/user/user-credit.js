@@ -3,9 +3,9 @@ const {userDeductCreditController, userUpdateCreditController, userGetCreditCont
 
 const Route = express.Router();
 
-Route.post("/user/credit/add", userAddCreditController)
-Route.post("/user/credit/deduct", userDeductCreditController)
-Route.post("/user/credit/update", userUpdateCreditController)
-Route.get("/user/credit/:mobileNumber", userGetCreditController);
+Route.post("/credit/add", userAddCreditController)
+Route.post("/credit/deduct", userDeductCreditController)
+Route.post("/credit/update/:email", userUpdateCreditController)
+Route.get("/credit/:email", userGetCreditController);
 
 module.exports = Route;
